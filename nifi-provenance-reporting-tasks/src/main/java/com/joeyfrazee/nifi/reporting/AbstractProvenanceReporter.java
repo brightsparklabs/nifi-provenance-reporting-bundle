@@ -21,17 +21,12 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.nifi.components.PropertyDescriptor;
-import org.apache.nifi.components.PropertyValue;
 import org.apache.nifi.components.state.Scope;
 import org.apache.nifi.components.state.StateManager;
 import org.apache.nifi.components.state.StateMap;
 import org.apache.nifi.annotation.behavior.Stateful;
-import org.apache.nifi.flowfile.FlowFile;
-import org.apache.nifi.processor.*;
-import org.apache.nifi.processor.exception.ProcessException;
 import org.apache.nifi.processor.util.StandardValidators;
 import org.apache.nifi.reporting.AbstractReportingTask;
 import org.apache.nifi.reporting.ReportingContext;
@@ -39,9 +34,6 @@ import org.apache.nifi.reporting.EventAccess;
 import org.apache.nifi.provenance.ProvenanceEventRepository;
 import org.apache.nifi.provenance.ProvenanceEventRecord;
 import org.apache.nifi.provenance.ProvenanceEventType;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Stateful(scopes = Scope.CLUSTER, description = "After querying the "
         + "provenance repository, the last seen event id is stored so "
@@ -93,21 +85,21 @@ public abstract class AbstractProvenanceReporter extends AbstractReportingTask {
     }
 
     private Map<String, Object> setField(Map<String, Object> map, final String key, final Object value, final boolean overwrite) {
-        Pattern p = Pattern.compile("^(\\w+)\\.(.*)$");
-        Matcher m = p.matcher(key);
+        final Pattern p = Pattern.compile("^(\\w+)\\.(.*)$");
+        final Matcher m = p.matcher(key);
         if (m.find()) {
-            String head = m.group(1);
-            String tail = m.group(2);
+            final String head = m.group(1);
+            final String tail = m.group(2);
             Map<String, Object> obj = (Map<String, Object>) map.get(head);
             if (obj == null) {
-                obj = new HashMap<String, Object>();
+                obj = new HashMap<>();
             }
-            Object v = setField(obj, tail, value, overwrite);
+            final Object v = setField(obj, tail, value, overwrite);
             map.put(head, v);
         }
         else {
-            Object obj = map.get(key);
-            if (obj != null && (obj instanceof Map)) {
+            final Object obj = map.get(key);
+            if (obj instanceof Map) {
                 getLogger().warn("value at " + key + " is a Map");
                 if (overwrite) {
                     map.put(key, value);
@@ -125,15 +117,15 @@ public abstract class AbstractProvenanceReporter extends AbstractReportingTask {
     }
 
     private Map<String, Object> createEventMap(ProvenanceEventRecord e) {
-        final Map<String, Object> source = new HashMap<String, Object>();
+        final Map<String, Object> source = new HashMap<>();
         final SimpleDateFormat ft = new SimpleDateFormat ("YYYY-MM-dd'T'HH:mm:ss.SSS'Z'");
 
         source.put("@timestamp", ft.format(new Date()));
-        source.put("event_id", Long.valueOf(e.getEventId()));
+        source.put("event_id", e.getEventId());
         source.put("event_time", new Date(e.getEventTime()));
         source.put("entry_date", new Date(e.getFlowFileEntryDate()));
         source.put("lineage_start_date", new Date(e.getLineageStartDate()));
-        source.put("file_size", Long.valueOf(e.getFileSize()));
+        source.put("file_size", e.getFileSize());
 
         final Long previousFileSize = e.getPreviousFileSize();
         if (previousFileSize != null && previousFileSize >= 0) {
@@ -196,7 +188,7 @@ public abstract class AbstractProvenanceReporter extends AbstractReportingTask {
             source.put("source_queue_id", sourceQueueId);
         }
 
-        final Map<String, Object> attributes = new HashMap<String, Object>();
+        final Map<String, Object> attributes = new HashMap<>();
 
         final Map<String, String> receivedAttributes = e.getAttributes();
         if (receivedAttributes != null && !receivedAttributes.isEmpty()) {
@@ -219,7 +211,7 @@ public abstract class AbstractProvenanceReporter extends AbstractReportingTask {
 
     @Override
     public List<PropertyDescriptor> getSupportedPropertyDescriptors() {
-        final List<PropertyDescriptor> descriptors = new ArrayList<PropertyDescriptor>();
+        final List<PropertyDescriptor> descriptors = new ArrayList<>();
         descriptors.add(PAGE_SIZE);
         descriptors.add(MAX_HISTORY);
         return descriptors;
@@ -240,11 +232,11 @@ public abstract class AbstractProvenanceReporter extends AbstractReportingTask {
         try {
             long lastEventId = getLastEventId(stateManager);
 
-            getLogger().info("starting event id: " + Long.toString(lastEventId));
+            getLogger().info("starting event id: " + lastEventId);
 
-            while (maxEventId != null && lastEventId < maxEventId.longValue()) {
-                if (maxHistory > 0 && (maxEventId.longValue() - lastEventId) > maxHistory) {
-                    lastEventId = maxEventId.longValue() - maxHistory + 1;
+            while (maxEventId != null && lastEventId < maxEventId) {
+                if (maxHistory > 0 && (maxEventId - lastEventId) > maxHistory) {
+                    lastEventId = maxEventId - maxHistory + 1;
                 }
 
                 final List<ProvenanceEventRecord> events = provenance.getEvents(lastEventId, pageSize);
@@ -254,16 +246,15 @@ public abstract class AbstractProvenanceReporter extends AbstractReportingTask {
                     indexEvent(event, context);
                 }
 
-                lastEventId = Math.min(lastEventId + pageSize, maxEventId.longValue());
+                lastEventId = Math.min(lastEventId + pageSize, maxEventId);
             }
 
-            getLogger().info("ending event id: " + Long.toString(lastEventId));
+            getLogger().info("ending event id: " + lastEventId);
 
             setLastEventId(stateManager, lastEventId);
         }
         catch (IOException e) {
             getLogger().error(e.getMessage(), e);
-            return;
         }
     }
 }
