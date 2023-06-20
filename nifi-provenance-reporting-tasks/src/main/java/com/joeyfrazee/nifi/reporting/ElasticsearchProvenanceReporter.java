@@ -56,16 +56,16 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
             .build();
 
     private ElasticsearchClient getElasticsearchClient(URL elasticsearchUrl) {
-        // Create the low-level client
-        RestClient restClient = RestClient.builder(
+        // Create the low-level client.
+        final RestClient restClient = RestClient.builder(
                 new HttpHost(elasticsearchUrl.getHost(), elasticsearchUrl.getPort())).build();
 
-        // Create the transport with a Jackson mapper
-        ElasticsearchTransport transport = new RestClientTransport(
+        // Create the transport with a Jackson mapper.
+        final ElasticsearchTransport transport = new RestClientTransport(
                 restClient, new JacksonJsonpMapper());
 
-        // And create the API client
-        ElasticsearchClient client = new ElasticsearchClient(transport);
+        // Create the API client.
+        final ElasticsearchClient client = new ElasticsearchClient(transport);
 
         return client;
     }
