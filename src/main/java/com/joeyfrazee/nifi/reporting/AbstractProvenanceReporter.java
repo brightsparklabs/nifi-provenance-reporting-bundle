@@ -21,7 +21,9 @@ import org.apache.nifi.reporting.EventAccess;
 import org.apache.nifi.reporting.ReportingContext;
 
 import java.io.*;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -180,13 +182,14 @@ public abstract class AbstractProvenanceReporter extends AbstractReportingTask {
      */
     private Map<String, Object> createEventMap(ProvenanceEventRecord event) {
         final Map<String, Object> source = new HashMap<>();
-        final SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        final DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
-        source.put("@timestamp", ft.format(new Date()));
+        source.put("@timestamp", formatter.format(LocalDateTime.now(ZoneId.systemDefault())));
         source.put("event_id", event.getEventId());
-        source.put("event_time", new Date(event.getEventTime()));
-        source.put("entry_date", new Date(event.getFlowFileEntryDate()));
-        source.put("lineage_start_date", new Date(event.getLineageStartDate()));
+        source.put("event_time", event.getEventTime());
+        source.put("entry_date", event.getFlowFileEntryDate());
+        source.put("lineage_start_date", event.getLineageStartDate());
         source.put("file_size", event.getFileSize());
 
         final Long previousFileSize = event.getPreviousFileSize();
