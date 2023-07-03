@@ -1,8 +1,22 @@
 /*
  * Maintained by brightSPARK Labs.
  * www.brightsparklabs.com
+ * _____________________________________________________________________________
  *
- * Refer to LICENSE at repository root for license details.
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.joeyfrazee.nifi.reporting;
@@ -13,7 +27,9 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
-
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.annotation.documentation.Tags;
 import org.apache.nifi.annotation.lifecycle.OnScheduled;
@@ -21,10 +37,6 @@ import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.controller.ConfigurationContext;
 import org.apache.nifi.processor.util.StandardValidators;
 import org.apache.nifi.reporting.ReportingContext;
-
-import java.io.*;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Tags({"http", "provenance"})
 @CapabilityDescription("A provenance reporting task that posts to an HTTP server")
