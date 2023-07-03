@@ -8,6 +8,8 @@
 // -----------------------------------------------------------------------------
 
 plugins {
+    // Apply the brightSPARK Labs plugin for standardisation.
+    id 'com.brightsparklabs.gradle.baseline' version '4.0.0'
     // Apply the Java Library plugin.
     id 'java-library'
     // Apply the Gradle nar plugin to build the .nar file.
@@ -59,8 +61,6 @@ targetCompatibility = 17
 // -----------------------------------------------------------------------------
 
 project.description = 'NiFi bundle for reporting provenance data.'
-project.group = 'com.brightsparklabs'
-project.version = 'git describe --dirty --always'.execute().text.trim()
 project.ext.url = 'https://github.com/brightsparklabs/nifi-provenance-reporting-bundle'
 project.ext.scm = 'scm:git@github.com:brightsparklabs/nifi-provenance-reporting-bundle.git'
 

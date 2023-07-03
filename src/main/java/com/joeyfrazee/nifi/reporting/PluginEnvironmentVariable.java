@@ -1,3 +1,10 @@
+/*
+ * Maintained by brightSPARK Labs.
+ * www.brightsparklabs.com
+ *
+ * Refer to LICENSE at repository root for license details.
+ */
+
 package com.joeyfrazee.nifi.reporting;
 
 import java.util.Optional;
@@ -8,15 +15,24 @@ import java.util.Optional;
  * @author brightSPARK Labs
  */
 public enum PluginEnvironmentVariable {
-    /** The environment variable defining the page size for scrolling through the provenance repository. */
+    /**
+     * The environment variable defining the page size for scrolling through the provenance
+     * repository.
+     */
     PAGE_SIZE("PAGE_SIZE"),
-    /** The environment variable defining how far back to look into the provenance repository to index provenance events. */
+    /**
+     * The environment variable defining how far back to look into the provenance repository to
+     * index provenance events.
+     */
     MAXIMUM_HISTORY("MAXIMUM_HISTORY"),
     /** The environment variable defining the address for Elasticsearch. */
     ELASTICSEARCH_URL("ELASTICSEARCH_URL"),
     /** The environment variable defining the name of the Elasticsearch index. */
     ELASTICSEARCH_INDEX("ELASTICSEARCH_INDEX"),
-    /** The environment variable defining the HTTP CA certificate SHA-256 fingerprint for Elasticsearch. */
+    /**
+     * The environment variable defining the HTTP CA certificate SHA-256 fingerprint for
+     * Elasticsearch.
+     */
     ELASTICSEARCH_CA_CERT_FINGERPRINT("ELASTICSEARCH_CA_CERT_FINGERPRINT"),
     /** The environment variable defining the username for Elasticsearch authentication. */
     ELASTICSEARCH_USERNAME("ELASTICSEARCH_USERNAME"),
