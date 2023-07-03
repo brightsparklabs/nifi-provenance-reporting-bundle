@@ -307,6 +307,8 @@ public abstract class AbstractProvenanceReporter extends AbstractReportingTask {
             // The key points to a nested value, so expand nested values.
             final String head = matcher.group(1);
             final String tail = matcher.group(2);
+            // Suppress "unchecked" warning since we know the value at `head` is a Map if it exists.
+            @SuppressWarnings("unchecked")
             Map<String, Object> obj = (Map<String, Object>) map.get(head);
             if (obj == null) {
                 obj = new HashMap<>();

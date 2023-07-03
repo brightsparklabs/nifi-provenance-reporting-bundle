@@ -154,7 +154,7 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
         // Create the Elasticsearch API client.
         final String protocol = elasticsearchUrl.getProtocol();
         final RestClient restClient =
-                (protocol.equals("https"))
+                protocol.equals("https")
                         ? getSecureRestClient(
                                 elasticsearchUrl,
                                 elasticsearchCACertFingerprint,

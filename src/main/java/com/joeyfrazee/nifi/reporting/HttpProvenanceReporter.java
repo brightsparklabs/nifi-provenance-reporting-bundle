@@ -70,6 +70,7 @@ public class HttpProvenanceReporter extends AbstractProvenanceReporter {
                         });
     }
 
+    @Override
     public void indexEvent(final Map<String, Object> event, final ReportingContext context)
             throws IOException {
         final String url = context.getProperty(URL).getValue();
