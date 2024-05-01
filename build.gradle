@@ -43,7 +43,7 @@ ext {
 
 dependencies {
     api "org.apache.nifi:nifi-utils:${NIFI_VERSION}"
-    api 'co.elastic.clients:elasticsearch-java:8.13.0'
+    api 'co.elastic.clients:elasticsearch-java:8.13.2'
     api 'com.fasterxml.jackson.core:jackson-databind:2.17.0'
     api 'com.squareup.okhttp:okhttp:2.7.5'
     compileOnly "org.apache.nifi:nifi-api:${NIFI_VERSION}"
