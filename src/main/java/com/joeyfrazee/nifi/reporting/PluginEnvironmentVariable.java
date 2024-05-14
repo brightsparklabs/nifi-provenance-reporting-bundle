@@ -56,12 +56,12 @@ public enum PluginEnvironmentVariable {
      * The environment variable defining the comma-separated list of attributes to include in the
      * data sent to Elasticsearch.
      */
-    ELASTICSEARCH_INCLUSION_LIST,
+    ELASTICSEARCH_ATTRIBUTE_INCLUSION_LIST,
     /**
      * The environment variable defining the comma-separated list of attributes to exclude from the
      * data sent to Elasticsearch.
      */
-    ELASTICSEARCH_EXCLUSION_LIST,
+    ELASTICSEARCH_ATTRIBUTE_EXCLUSION_LIST,
     ;
 
     /** The name of the environment variable within the system. */

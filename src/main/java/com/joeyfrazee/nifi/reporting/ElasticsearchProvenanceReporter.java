@@ -160,21 +160,22 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
 
     /**
      * The comma-separated list of attributes to include in the data sent to Elasticsearch. Mutually
-     * exclusive with `ELASTICSEARCH_EXCLUSION_LIST`.
+     * exclusive with `ELASTICSEARCH_ATTRIBUTE_EXCLUSION_LIST`.
      */
-    public static final PropertyDescriptor ELASTICSEARCH_INCLUSION_LIST =
+    public static final PropertyDescriptor ELASTICSEARCH_ATTRIBUTE_INCLUSION_LIST =
             new PropertyDescriptor.Builder()
-                    .name("Elasticsearch Inclusion List")
-                    .displayName("Elasticsearch Inclusion List")
+                    .name("Elasticsearch Attribute Inclusion List")
+                    .displayName("Elasticsearch Attribute Inclusion List")
                     .description(
                             "The comma-separated list of attributes to include in the data sent "
                                     + "to Elasticsearch. All other attributes will be excluded. "
                                     + "This property is mutually exclusive with the Elasticsearch"
                                     + " Exclusion List."
                                     + defaultEnvironmentVariableDescription(
-                                            PluginEnvironmentVariable.ELASTICSEARCH_INCLUSION_LIST))
+                                            PluginEnvironmentVariable
+                                                    .ELASTICSEARCH_ATTRIBUTE_INCLUSION_LIST))
                     .defaultValue(
-                            PluginEnvironmentVariable.ELASTICSEARCH_INCLUSION_LIST
+                            PluginEnvironmentVariable.ELASTICSEARCH_ATTRIBUTE_INCLUSION_LIST
                                     .getValue()
                                     .orElse(null))
                     .addValidator(
@@ -184,21 +185,22 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
 
     /**
      * The comma-separated list of attributes to exclude from the data sent to Elasticsearch.
-     * Mutually exclusive with `ELASTICSEARCH_INCLUSION_LIST`.
+     * Mutually exclusive with `ELASTICSEARCH_ATTRIBUTE_INCLUSION_LIST`.
      */
-    public static final PropertyDescriptor ELASTICSEARCH_EXCLUSION_LIST =
+    public static final PropertyDescriptor ELASTICSEARCH_ATTRIBUTE_EXCLUSION_LIST =
             new PropertyDescriptor.Builder()
-                    .name("Elasticsearch Exclusion List")
-                    .displayName("Elasticsearch Exclusion List")
+                    .name("Elasticsearch Attribute Exclusion List")
+                    .displayName("Elasticsearch Attribute Exclusion List")
                     .description(
                             "The comma-separated list of attributes to exclude from the data sent "
                                     + "to Elasticsearch. All other attributes will be included. "
                                     + "This property is mutually exclusive with the Elasticsearch"
                                     + " Inclusion List."
                                     + defaultEnvironmentVariableDescription(
-                                            PluginEnvironmentVariable.ELASTICSEARCH_EXCLUSION_LIST))
+                                            PluginEnvironmentVariable
+                                                    .ELASTICSEARCH_ATTRIBUTE_EXCLUSION_LIST))
                     .defaultValue(
-                            PluginEnvironmentVariable.ELASTICSEARCH_EXCLUSION_LIST
+                            PluginEnvironmentVariable.ELASTICSEARCH_ATTRIBUTE_EXCLUSION_LIST
                                     .getValue()
                                     .orElse(null))
                     .addValidator(
@@ -218,8 +220,8 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
         descriptors.add(ELASTICSEARCH_CA_CERT_FINGERPRINT);
         descriptors.add(ELASTICSEARCH_USERNAME);
         descriptors.add(ELASTICSEARCH_PASSWORD);
-        descriptors.add(ELASTICSEARCH_INCLUSION_LIST);
-        descriptors.add(ELASTICSEARCH_EXCLUSION_LIST);
+        descriptors.add(ELASTICSEARCH_ATTRIBUTE_INCLUSION_LIST);
+        descriptors.add(ELASTICSEARCH_ATTRIBUTE_EXCLUSION_LIST);
         return descriptors;
     }
 
@@ -248,7 +250,7 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
                         : getRestClient(elasticsearchUrl)) {
             final ElasticsearchClient client = getElasticsearchClient(restClient);
 
-            // Filter event fields based on inclusion/exclusion list.
+            // Filter event fields based on attribute inclusion/exclusion list.
             final ImmutableMap<String, Object> filteredEvent = filterEventFields(event, context);
 
             // Index the event.
@@ -269,9 +271,9 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
         final List<ValidationResult> errors = new ArrayList<>();
 
         final String inclusionListString =
-                validationContext.getProperty(ELASTICSEARCH_INCLUSION_LIST).getValue();
+                validationContext.getProperty(ELASTICSEARCH_ATTRIBUTE_INCLUSION_LIST).getValue();
         final String exclusionListString =
-                validationContext.getProperty(ELASTICSEARCH_EXCLUSION_LIST).getValue();
+                validationContext.getProperty(ELASTICSEARCH_ATTRIBUTE_EXCLUSION_LIST).getValue();
 
         // Ensure the Elasticsearch inclusion and exclusion lists are mutually exclusive.
         if (!Strings.isNullOrEmpty(inclusionListString)
@@ -366,9 +368,9 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
     }
 
     /**
-     * Filter the given event to remove fields based on the `Elasticsearch Inclusion List` or
-     * `Elasticsearch Exclusion List`. If both lists are empty, the event is returned with fields
-     * unmodified.
+     * Filter the given event to remove fields based on the `Elasticsearch Attribute Inclusion List`
+     * or `Elasticsearch Attribute Exclusion List`. If both lists are empty, the event is returned
+     * with fields unmodified.
      *
      * @param event The event to filter.
      * @param context The reporting context.
@@ -378,7 +380,7 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
             final Map<String, Object> event, final ReportingContext context) {
         // Process inclusion rules if present.
         final String inclusionListString =
-                context.getProperty(ELASTICSEARCH_INCLUSION_LIST).getValue();
+                context.getProperty(ELASTICSEARCH_ATTRIBUTE_INCLUSION_LIST).getValue();
         if (!Strings.isNullOrEmpty(inclusionListString)) {
             // Only include fields which ARE in the field list.
             final ImmutableSet<String> fieldsToInclude = extractFieldNames(inclusionListString);
@@ -389,7 +391,7 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
 
         // Process exclusion rules if present.
         final String exclusionListString =
-                context.getProperty(ELASTICSEARCH_EXCLUSION_LIST).getValue();
+                context.getProperty(ELASTICSEARCH_ATTRIBUTE_EXCLUSION_LIST).getValue();
         if (!Strings.isNullOrEmpty(exclusionListString)) {
             // Only include fields which ARE NOT in the field list.
             final ImmutableSet<String> fieldsToExclude = extractFieldNames(exclusionListString);
