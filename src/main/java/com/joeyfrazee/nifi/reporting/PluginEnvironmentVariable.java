@@ -62,6 +62,26 @@ public enum PluginEnvironmentVariable {
      * data sent to Elasticsearch.
      */
     ELASTICSEARCH_ATTRIBUTE_EXCLUSION_LIST,
+    /**
+     * The environment variable defining the comma-separated list of component ids used to filter
+     * which events are sent to Elasticsearch.
+     */
+    ELASTICSEARCH_COMPONENT_ID_FILTER_INCLUSION_LIST,
+    /**
+     * The environment variable defining the comma-separated list of component ids used to filter
+     * which events are not sent to Elasticsearch.
+     */
+    ELASTICSEARCH_COMPONENT_ID_FILTER_EXCLUSION_LIST,
+    /**
+     * The environment variable defining the comma-separated list of event types used to filter
+     * which events are sent to Elasticsearch.
+     */
+    ELASTICSEARCH_EVENT_TYPE_FILTER_INCLUSION_LIST,
+    /**
+     * The environment variable defining the comma-separated list of event types used to filter
+     * which events are not sent to Elasticsearch.
+     */
+    ELASTICSEARCH_EVENT_TYPE_FILTER_EXCLUSION_LIST,
     ;
 
     /** The name of the environment variable within the system. */
