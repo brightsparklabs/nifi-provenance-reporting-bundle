@@ -610,63 +610,35 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
     }
 
     /**
-     * Check whether an event should be filtered based on its Component ID value.
+     * Check whether an event should be filtered by comparing the field value of the event
+     * against the corresponding inclusion and exclusion lists.
      *
-     * @param eventRecord The Event Record to filter.
+     * @param fieldValue The field value of the Event we want to filter.
+     * @param inclusionList The inclusion list we are filtering against.
+     * @param exclusionList The exclusion list we are filtering against.
      * @param context The reporting context.
-     * @return True if the event should be filtered.
+     * @return False if the event should be filtered.
      */
-    private boolean filterComponentId(
-            final ProvenanceEventRecord eventRecord, final ReportingContext context) {
-        final String inclusionEventFilterList =
-                context.getProperty(ELASTICSEARCH_COMPONENT_ID_FILTER_INCLUSION_LIST).getValue();
+    private boolean filterEventByFieldValue(
+            final String fieldValue,
+            final PropertyDescriptor inclusionList,
+            final PropertyDescriptor exclusionList,
+            final ReportingContext context) {
+        final String inclusionEventFilterList = context.getProperty(inclusionList).getValue();
         if (!Strings.isNullOrEmpty(inclusionEventFilterList)) {
-            final ImmutableSet<String> valuesToInclude =
+            final ImmutableSet<String> inclusionSet =
                     extractFieldNames(inclusionEventFilterList);
-            final String componentId = eventRecord.getComponentId();
-            return !valuesToInclude.contains(componentId);
+            return inclusionSet.contains(fieldValue);
         }
 
-        final String exclusionEventFilterList =
-                context.getProperty(ELASTICSEARCH_COMPONENT_ID_FILTER_EXCLUSION_LIST).getValue();
+        final String exclusionEventFilterList = context.getProperty(exclusionList).getValue();
         if (!Strings.isNullOrEmpty(exclusionEventFilterList)) {
-            final ImmutableSet<String> valuesToInclude =
+            final ImmutableSet<String> exclusionSet =
                     extractFieldNames(exclusionEventFilterList);
-            final String componentId = eventRecord.getComponentId();
-            return valuesToInclude.contains(componentId);
+            return !exclusionSet.contains(fieldValue);
         }
         // Event should not be filtered if no filter lists are defined.
-        return false;
-    }
-
-    /**
-     * Check whether an event should be filtered based on its Event Type value.
-     *
-     * @param eventRecord The Event Record to filter.
-     * @param context The reporting context.
-     * @return True if the event should be filtered.
-     */
-    private boolean filterEventType(
-            final ProvenanceEventRecord eventRecord, final ReportingContext context) {
-        final String inclusionEventFilterList =
-                context.getProperty(ELASTICSEARCH_EVENT_TYPE_FILTER_INCLUSION_LIST).getValue();
-        if (!Strings.isNullOrEmpty(inclusionEventFilterList)) {
-            final ImmutableSet<String> valuesToInclude =
-                    extractFieldNames(inclusionEventFilterList);
-            final String componentId = eventRecord.getEventType().toString();
-            return !valuesToInclude.contains(componentId);
-        }
-
-        final String exclusionEventFilterList =
-                context.getProperty(ELASTICSEARCH_EVENT_TYPE_FILTER_EXCLUSION_LIST).getValue();
-        if (!Strings.isNullOrEmpty(exclusionEventFilterList)) {
-            final ImmutableSet<String> valuesToInclude =
-                    extractFieldNames(exclusionEventFilterList);
-            final String componentId = eventRecord.getEventType().toString();
-            return valuesToInclude.contains(componentId);
-        }
-        // Event should not be filtered if no filter lists are defined.
-        return false;
+        return true;
     }
 
     /**
@@ -674,14 +646,26 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
      *
      * @param events The list of events to filter.
      * @param context The reporting context.
-     * @return The filtered list.
+     * @return The filtered list of events.
      */
     private List<ProvenanceEventRecord> filterEventList(
             final List<ProvenanceEventRecord> events, final ReportingContext context) {
         final List<ProvenanceEventRecord> filteredEvents =
                 events.stream()
-                        .filter(e -> !filterComponentId(e, context))
-                        .filter(e -> !filterEventType(e, context))
+                        .filter(
+                                e ->
+                                        filterEventByFieldValue(
+                                                e.getComponentId(),
+                                                ELASTICSEARCH_COMPONENT_ID_FILTER_INCLUSION_LIST,
+                                                ELASTICSEARCH_COMPONENT_ID_FILTER_EXCLUSION_LIST,
+                                                context))
+                        .filter(
+                                e ->
+                                        filterEventByFieldValue(
+                                                e.getEventType().toString(),
+                                                ELASTICSEARCH_EVENT_TYPE_FILTER_INCLUSION_LIST,
+                                                ELASTICSEARCH_EVENT_TYPE_FILTER_EXCLUSION_LIST,
+                                                context))
                         .toList();
         return filteredEvents;
     }
