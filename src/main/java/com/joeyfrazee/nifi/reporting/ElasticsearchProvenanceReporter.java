@@ -610,8 +610,8 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
     }
 
     /**
-     * Check whether an event should be filtered by comparing the field value of the event
-     * against the corresponding inclusion and exclusion lists.
+     * Check whether an event should be filtered by comparing the field value of the event against
+     * the corresponding inclusion and exclusion lists.
      *
      * @param fieldValue The field value of the Event we want to filter.
      * @param inclusionList The inclusion list we are filtering against.
@@ -626,15 +626,13 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
             final ReportingContext context) {
         final String inclusionEventFilterList = context.getProperty(inclusionList).getValue();
         if (!Strings.isNullOrEmpty(inclusionEventFilterList)) {
-            final ImmutableSet<String> inclusionSet =
-                    extractFieldNames(inclusionEventFilterList);
+            final ImmutableSet<String> inclusionSet = extractFieldNames(inclusionEventFilterList);
             return inclusionSet.contains(fieldValue);
         }
 
         final String exclusionEventFilterList = context.getProperty(exclusionList).getValue();
         if (!Strings.isNullOrEmpty(exclusionEventFilterList)) {
-            final ImmutableSet<String> exclusionSet =
-                    extractFieldNames(exclusionEventFilterList);
+            final ImmutableSet<String> exclusionSet = extractFieldNames(exclusionEventFilterList);
             return !exclusionSet.contains(fieldValue);
         }
         // Event should not be filtered if no filter lists are defined.
