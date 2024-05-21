@@ -50,6 +50,8 @@ import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.components.ValidationContext;
 import org.apache.nifi.components.ValidationResult;
 import org.apache.nifi.processor.util.StandardValidators;
+import org.apache.nifi.provenance.ProvenanceEventRecord;
+import org.apache.nifi.provenance.ProvenanceEventRepository;
 import org.apache.nifi.reporting.ReportingContext;
 import org.apache.nifi.scheduling.SchedulingStrategy;
 import org.elasticsearch.client.RestClient;
@@ -160,21 +162,22 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
 
     /**
      * The comma-separated list of attributes to include in the data sent to Elasticsearch. Mutually
-     * exclusive with `ELASTICSEARCH_EXCLUSION_LIST`.
+     * exclusive with `ELASTICSEARCH_ATTRIBUTE_EXCLUSION_LIST`.
      */
-    public static final PropertyDescriptor ELASTICSEARCH_INCLUSION_LIST =
+    public static final PropertyDescriptor ELASTICSEARCH_ATTRIBUTE_INCLUSION_LIST =
             new PropertyDescriptor.Builder()
-                    .name("Elasticsearch Inclusion List")
-                    .displayName("Elasticsearch Inclusion List")
+                    .name("Elasticsearch Attribute Inclusion List")
+                    .displayName("Elasticsearch Attribute Inclusion List")
                     .description(
                             "The comma-separated list of attributes to include in the data sent "
                                     + "to Elasticsearch. All other attributes will be excluded. "
                                     + "This property is mutually exclusive with the Elasticsearch"
                                     + " Exclusion List."
                                     + defaultEnvironmentVariableDescription(
-                                            PluginEnvironmentVariable.ELASTICSEARCH_INCLUSION_LIST))
+                                            PluginEnvironmentVariable
+                                                    .ELASTICSEARCH_ATTRIBUTE_INCLUSION_LIST))
                     .defaultValue(
-                            PluginEnvironmentVariable.ELASTICSEARCH_INCLUSION_LIST
+                            PluginEnvironmentVariable.ELASTICSEARCH_ATTRIBUTE_INCLUSION_LIST
                                     .getValue()
                                     .orElse(null))
                     .addValidator(
@@ -184,21 +187,128 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
 
     /**
      * The comma-separated list of attributes to exclude from the data sent to Elasticsearch.
-     * Mutually exclusive with `ELASTICSEARCH_INCLUSION_LIST`.
+     * Mutually exclusive with `ELASTICSEARCH_ATTRIBUTE_INCLUSION_LIST`.
      */
-    public static final PropertyDescriptor ELASTICSEARCH_EXCLUSION_LIST =
+    public static final PropertyDescriptor ELASTICSEARCH_ATTRIBUTE_EXCLUSION_LIST =
             new PropertyDescriptor.Builder()
-                    .name("Elasticsearch Exclusion List")
-                    .displayName("Elasticsearch Exclusion List")
+                    .name("Elasticsearch Attribute Exclusion List")
+                    .displayName("Elasticsearch Attribute Exclusion List")
                     .description(
                             "The comma-separated list of attributes to exclude from the data sent "
                                     + "to Elasticsearch. All other attributes will be included. "
                                     + "This property is mutually exclusive with the Elasticsearch"
                                     + " Inclusion List."
                                     + defaultEnvironmentVariableDescription(
-                                            PluginEnvironmentVariable.ELASTICSEARCH_EXCLUSION_LIST))
+                                            PluginEnvironmentVariable
+                                                    .ELASTICSEARCH_ATTRIBUTE_EXCLUSION_LIST))
                     .defaultValue(
-                            PluginEnvironmentVariable.ELASTICSEARCH_EXCLUSION_LIST
+                            PluginEnvironmentVariable.ELASTICSEARCH_ATTRIBUTE_EXCLUSION_LIST
+                                    .getValue()
+                                    .orElse(null))
+                    .addValidator(
+                            StandardValidators.createListValidator(
+                                    true, true, StandardValidators.ATTRIBUTE_KEY_VALIDATOR))
+                    .build();
+
+    /**
+     * The comma-separated list of 'component ids' to filter events being sent to Elasticsearch.
+     * Mutually exclusive with `ELASTICSEARCH_COMPONENT_ID_FILTER_EXCLUSION_LIST`.
+     */
+    public static final PropertyDescriptor ELASTICSEARCH_COMPONENT_ID_FILTER_INCLUSION_LIST =
+            new PropertyDescriptor.Builder()
+                    .name("Elasticsearch Component Id Filter Inclusion List")
+                    .displayName("Elasticsearch Component Id Filter Inclusion List")
+                    .description(
+                            "The comma-separated list of component ids to filter events being sent "
+                                    + "to Elasticsearch. All events containing a non-specified component "
+                                    + "id will be excluded."
+                                    + "This property is mutually exclusive with the Elasticsearch "
+                                    + "Component Id Filter Exclusion List."
+                                    + defaultEnvironmentVariableDescription(
+                                            PluginEnvironmentVariable
+                                                    .ELASTICSEARCH_COMPONENT_ID_FILTER_INCLUSION_LIST))
+                    .defaultValue(
+                            PluginEnvironmentVariable
+                                    .ELASTICSEARCH_COMPONENT_ID_FILTER_INCLUSION_LIST
+                                    .getValue()
+                                    .orElse(null))
+                    .addValidator(
+                            StandardValidators.createListValidator(
+                                    true, true, StandardValidators.ATTRIBUTE_KEY_VALIDATOR))
+                    .build();
+
+    /**
+     * The comma-separated list of 'component ids' to filter events from being sent to
+     * Elasticsearch. Mutually exclusive with `ELASTICSEARCH_COMPONENT_ID_FILTER_INCLUSION_LIST`.
+     */
+    public static final PropertyDescriptor ELASTICSEARCH_COMPONENT_ID_FILTER_EXCLUSION_LIST =
+            new PropertyDescriptor.Builder()
+                    .name("Elasticsearch Component Id Filter Exclusion List")
+                    .displayName("Elasticsearch Component Id Filter Exclusion List")
+                    .description(
+                            "The comma-separated list of component ids to filter events from being sent "
+                                    + "to Elasticsearch. All events containing a non-specified component "
+                                    + "id will be included."
+                                    + "This property is mutually exclusive with the Elasticsearch "
+                                    + "Component Id Filter Exclusion List."
+                                    + defaultEnvironmentVariableDescription(
+                                            PluginEnvironmentVariable
+                                                    .ELASTICSEARCH_COMPONENT_ID_FILTER_EXCLUSION_LIST))
+                    .defaultValue(
+                            PluginEnvironmentVariable
+                                    .ELASTICSEARCH_COMPONENT_ID_FILTER_EXCLUSION_LIST
+                                    .getValue()
+                                    .orElse(null))
+                    .addValidator(
+                            StandardValidators.createListValidator(
+                                    true, true, StandardValidators.ATTRIBUTE_KEY_VALIDATOR))
+                    .build();
+
+    /**
+     * The comma-separated list of 'event types' to filter events being sent to Elasticsearch.
+     * Mutually exclusive with `ELASTICSEARCH_EVENT_TYPE_FILTER_EXCLUSION_LIST`.
+     */
+    public static final PropertyDescriptor ELASTICSEARCH_EVENT_TYPE_FILTER_INCLUSION_LIST =
+            new PropertyDescriptor.Builder()
+                    .name("Elasticsearch Event Type Filter Inclusion List")
+                    .displayName("Elasticsearch Event Type Filter Inclusion List")
+                    .description(
+                            "The comma-separated list of event types to filter events being sent "
+                                    + "to Elasticsearch. All events containing a non-specified component "
+                                    + "id will be excluded."
+                                    + "This property is mutually exclusive with the Elasticsearch "
+                                    + "Component Id Filter Exclusion List."
+                                    + defaultEnvironmentVariableDescription(
+                                            PluginEnvironmentVariable
+                                                    .ELASTICSEARCH_EVENT_TYPE_FILTER_INCLUSION_LIST))
+                    .defaultValue(
+                            PluginEnvironmentVariable.ELASTICSEARCH_EVENT_TYPE_FILTER_INCLUSION_LIST
+                                    .getValue()
+                                    .orElse(null))
+                    .addValidator(
+                            StandardValidators.createListValidator(
+                                    true, true, StandardValidators.ATTRIBUTE_KEY_VALIDATOR))
+                    .build();
+
+    /**
+     * The comma-separated list of 'event types' to filter events from being sent to Elasticsearch.
+     * Mutually exclusive with `ELASTICSEARCH_EVENT_TYPE_FILTER_INCLUSION_LIST`.
+     */
+    public static final PropertyDescriptor ELASTICSEARCH_EVENT_TYPE_FILTER_EXCLUSION_LIST =
+            new PropertyDescriptor.Builder()
+                    .name("Elasticsearch Event Type Filter Exclusion List")
+                    .displayName("Elasticsearch Event Type Filter Exclusion List")
+                    .description(
+                            "The comma-separated list of event types to filter events from being sent "
+                                    + "to Elasticsearch. All events containing a non-specified component "
+                                    + "id will be included."
+                                    + "This property is mutually exclusive with the Elasticsearch "
+                                    + "Component Id Filter Exclusion List."
+                                    + defaultEnvironmentVariableDescription(
+                                            PluginEnvironmentVariable
+                                                    .ELASTICSEARCH_EVENT_TYPE_FILTER_EXCLUSION_LIST))
+                    .defaultValue(
+                            PluginEnvironmentVariable.ELASTICSEARCH_EVENT_TYPE_FILTER_EXCLUSION_LIST
                                     .getValue()
                                     .orElse(null))
                     .addValidator(
@@ -218,9 +328,42 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
         descriptors.add(ELASTICSEARCH_CA_CERT_FINGERPRINT);
         descriptors.add(ELASTICSEARCH_USERNAME);
         descriptors.add(ELASTICSEARCH_PASSWORD);
-        descriptors.add(ELASTICSEARCH_INCLUSION_LIST);
-        descriptors.add(ELASTICSEARCH_EXCLUSION_LIST);
+        descriptors.add(ELASTICSEARCH_ATTRIBUTE_INCLUSION_LIST);
+        descriptors.add(ELASTICSEARCH_ATTRIBUTE_EXCLUSION_LIST);
+        descriptors.add(ELASTICSEARCH_COMPONENT_ID_FILTER_INCLUSION_LIST);
+        descriptors.add(ELASTICSEARCH_COMPONENT_ID_FILTER_EXCLUSION_LIST);
+        descriptors.add(ELASTICSEARCH_EVENT_TYPE_FILTER_INCLUSION_LIST);
+        descriptors.add(ELASTICSEARCH_EVENT_TYPE_FILTER_EXCLUSION_LIST);
         return descriptors;
+    }
+
+    @Override
+    public List<ProvenanceEventRecord> getEventList(
+            final ProvenanceEventRepository provenance,
+            final long lastEventId,
+            final int pageSize,
+            final ReportingContext context)
+            throws IOException {
+        final List<ProvenanceEventRecord> events = provenance.getEvents(lastEventId, pageSize);
+
+        // Ensure at least one filter list is defined before filtering.
+        if (!Strings.isNullOrEmpty(
+                        context.getProperty(ELASTICSEARCH_COMPONENT_ID_FILTER_INCLUSION_LIST)
+                                .getValue())
+                || !Strings.isNullOrEmpty(
+                        context.getProperty(ELASTICSEARCH_COMPONENT_ID_FILTER_EXCLUSION_LIST)
+                                .getValue())
+                || !Strings.isNullOrEmpty(
+                        context.getProperty(ELASTICSEARCH_EVENT_TYPE_FILTER_INCLUSION_LIST)
+                                .getValue())
+                || !Strings.isNullOrEmpty(
+                        context.getProperty(ELASTICSEARCH_EVENT_TYPE_FILTER_EXCLUSION_LIST)
+                                .getValue())) {
+            return filterEventList(events, context);
+        }
+
+        // Otherwise, return the default list.
+        return events;
     }
 
     @Override
@@ -248,7 +391,7 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
                         : getRestClient(elasticsearchUrl)) {
             final ElasticsearchClient client = getElasticsearchClient(restClient);
 
-            // Filter event fields based on inclusion/exclusion list.
+            // Filter event fields based on attribute inclusion/exclusion list.
             final ImmutableMap<String, Object> filteredEvent = filterEventFields(event, context);
 
             // Index the event.
@@ -269,9 +412,9 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
         final List<ValidationResult> errors = new ArrayList<>();
 
         final String inclusionListString =
-                validationContext.getProperty(ELASTICSEARCH_INCLUSION_LIST).getValue();
+                validationContext.getProperty(ELASTICSEARCH_ATTRIBUTE_INCLUSION_LIST).getValue();
         final String exclusionListString =
-                validationContext.getProperty(ELASTICSEARCH_EXCLUSION_LIST).getValue();
+                validationContext.getProperty(ELASTICSEARCH_ATTRIBUTE_EXCLUSION_LIST).getValue();
 
         // Ensure the Elasticsearch inclusion and exclusion lists are mutually exclusive.
         if (!Strings.isNullOrEmpty(inclusionListString)
@@ -281,8 +424,60 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
                             // The validation error message is displayed in the NiFi UI as
                             // "'<subject>' is invalid because <explanation>"
                             .subject(
-                                    "Mutual exclusion required for `Elasticsearch Inclusion "
-                                            + "List` & `Elasticsearch Exclusion List`.")
+                                    "Mutual exclusion required for `Elasticsearch Attribute Inclusion "
+                                            + "List` & `Elasticsearch Attribute Exclusion List`.")
+                            .explanation(
+                                    "the attribute inclusion and exclusion lists are mutually exclusive "
+                                            + "(i.e. only one can be specified).")
+                            .valid(false)
+                            .build());
+        }
+
+        final String componentIdInclusiveFilterListString =
+                validationContext
+                        .getProperty(ELASTICSEARCH_COMPONENT_ID_FILTER_INCLUSION_LIST)
+                        .getValue();
+        final String componentIdExclusiveFilterListString =
+                validationContext
+                        .getProperty(ELASTICSEARCH_COMPONENT_ID_FILTER_EXCLUSION_LIST)
+                        .getValue();
+
+        if (!Strings.isNullOrEmpty(componentIdInclusiveFilterListString)
+                && !Strings.isNullOrEmpty(componentIdExclusiveFilterListString)) {
+            errors.add(
+                    new ValidationResult.Builder()
+                            // The validation error message is displayed in the NiFi UI as
+                            // "'<subject>' is invalid because <explanation>"
+                            .subject(
+                                    "Mutual exclusion required for `Elasticsearch Component Id "
+                                            + "Filter Inclusion List` & `Elasticsearch Component "
+                                            + "Id Filter Exclusion List`.")
+                            .explanation(
+                                    "the inclusion and exclusion lists are mutually exclusive "
+                                            + "(i.e. only one can be specified).")
+                            .valid(false)
+                            .build());
+        }
+
+        final String eventTypeInclusiveFilterListString =
+                validationContext
+                        .getProperty(ELASTICSEARCH_EVENT_TYPE_FILTER_INCLUSION_LIST)
+                        .getValue();
+        final String eventTypeExclusiveFilterListString =
+                validationContext
+                        .getProperty(ELASTICSEARCH_EVENT_TYPE_FILTER_EXCLUSION_LIST)
+                        .getValue();
+
+        if (!Strings.isNullOrEmpty(eventTypeInclusiveFilterListString)
+                && !Strings.isNullOrEmpty(eventTypeExclusiveFilterListString)) {
+            errors.add(
+                    new ValidationResult.Builder()
+                            // The validation error message is displayed in the NiFi UI as
+                            // "'<subject>' is invalid because <explanation>"
+                            .subject(
+                                    "Mutual exclusion required for `Elasticsearch Event Type "
+                                            + "Filter Inclusion List` & `Elasticsearch Event "
+                                            + "Type Filter Exclusion List`.")
                             .explanation(
                                     "the inclusion and exclusion lists are mutually exclusive "
                                             + "(i.e. only one can be specified).")
@@ -366,9 +561,9 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
     }
 
     /**
-     * Filter the given event to remove fields based on the `Elasticsearch Inclusion List` or
-     * `Elasticsearch Exclusion List`. If both lists are empty, the event is returned with fields
-     * unmodified.
+     * Filter the given event to remove fields based on the `Elasticsearch Attribute Inclusion List`
+     * or `Elasticsearch Attribute Exclusion List`. If both lists are empty, the event is returned
+     * with fields unmodified.
      *
      * @param event The event to filter.
      * @param context The reporting context.
@@ -378,7 +573,7 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
             final Map<String, Object> event, final ReportingContext context) {
         // Process inclusion rules if present.
         final String inclusionListString =
-                context.getProperty(ELASTICSEARCH_INCLUSION_LIST).getValue();
+                context.getProperty(ELASTICSEARCH_ATTRIBUTE_INCLUSION_LIST).getValue();
         if (!Strings.isNullOrEmpty(inclusionListString)) {
             // Only include fields which ARE in the field list.
             final ImmutableSet<String> fieldsToInclude = extractFieldNames(inclusionListString);
@@ -389,7 +584,7 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
 
         // Process exclusion rules if present.
         final String exclusionListString =
-                context.getProperty(ELASTICSEARCH_EXCLUSION_LIST).getValue();
+                context.getProperty(ELASTICSEARCH_ATTRIBUTE_EXCLUSION_LIST).getValue();
         if (!Strings.isNullOrEmpty(exclusionListString)) {
             // Only include fields which ARE NOT in the field list.
             final ImmutableSet<String> fieldsToExclude = extractFieldNames(exclusionListString);
@@ -412,5 +607,64 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
         // Convert comma-separated list into array, while ignoring whitespace.
         final Iterable<String> split = COMMA_SPLITTER.split(fieldsString);
         return ImmutableSet.copyOf(split);
+    }
+
+    /**
+     * Check whether an event should be filtered by comparing the field value of the event against
+     * the corresponding inclusion and exclusion lists.
+     *
+     * @param fieldValue The field value of the Event we want to filter.
+     * @param inclusionList The inclusion list we are filtering against.
+     * @param exclusionList The exclusion list we are filtering against.
+     * @param context The reporting context.
+     * @return False if the event should be filtered.
+     */
+    private boolean filterEventByFieldValue(
+            final String fieldValue,
+            final PropertyDescriptor inclusionList,
+            final PropertyDescriptor exclusionList,
+            final ReportingContext context) {
+        final String inclusionEventFilterList = context.getProperty(inclusionList).getValue();
+        if (!Strings.isNullOrEmpty(inclusionEventFilterList)) {
+            final ImmutableSet<String> inclusionSet = extractFieldNames(inclusionEventFilterList);
+            return inclusionSet.contains(fieldValue);
+        }
+
+        final String exclusionEventFilterList = context.getProperty(exclusionList).getValue();
+        if (!Strings.isNullOrEmpty(exclusionEventFilterList)) {
+            final ImmutableSet<String> exclusionSet = extractFieldNames(exclusionEventFilterList);
+            return !exclusionSet.contains(fieldValue);
+        }
+        // Event should not be filtered if no filter lists are defined.
+        return true;
+    }
+
+    /**
+     * Filter the list of events.
+     *
+     * @param events The list of events to filter.
+     * @param context The reporting context.
+     * @return The filtered list of events.
+     */
+    private List<ProvenanceEventRecord> filterEventList(
+            final List<ProvenanceEventRecord> events, final ReportingContext context) {
+        final List<ProvenanceEventRecord> filteredEvents =
+                events.stream()
+                        .filter(
+                                e ->
+                                        filterEventByFieldValue(
+                                                e.getComponentId(),
+                                                ELASTICSEARCH_COMPONENT_ID_FILTER_INCLUSION_LIST,
+                                                ELASTICSEARCH_COMPONENT_ID_FILTER_EXCLUSION_LIST,
+                                                context))
+                        .filter(
+                                e ->
+                                        filterEventByFieldValue(
+                                                e.getEventType().toString(),
+                                                ELASTICSEARCH_EVENT_TYPE_FILTER_INCLUSION_LIST,
+                                                ELASTICSEARCH_EVENT_TYPE_FILTER_EXCLUSION_LIST,
+                                                context))
+                        .toList();
+        return filteredEvents;
     }
 }

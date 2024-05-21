@@ -8,6 +8,21 @@ The changelog is applicable from version `1.0.0` onwards.
 
 ---
 
+## [Unreleased] - 2024-05-16
+
+### Added
+
+- APED-123: Added inclusion and exclusion lists to filter events based on `component_id` and `event_type` values.
+
+### Changed
+
+- APED-123: Updated the inclusion and exclusion lists to specify their focus on Attributes.
+- APED-123: Updated README.
+
+[Commits](https://github.com/brightsparklabs/nifi-provenance-reporting-bundle/compare/2.3.0...develop)
+
+---
+
 ## [2.3.0] - 2024-03-25
 
 ### Changed
