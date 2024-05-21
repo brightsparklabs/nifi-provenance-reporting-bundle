@@ -8,7 +8,7 @@ The changelog is applicable from version `1.0.0` onwards.
 
 ---
 
-## [Unreleased] - 2024-05-16
+## [2.4.0] - 2024-05-21
 
 ### Added
 
@@ -19,7 +19,7 @@ The changelog is applicable from version `1.0.0` onwards.
 - APED-123: Updated the inclusion and exclusion lists to specify their focus on Attributes.
 - APED-123: Updated README.
 
-[Commits](https://github.com/brightsparklabs/nifi-provenance-reporting-bundle/compare/2.3.0...develop)
+[Commits](https://github.com/brightsparklabs/nifi-provenance-reporting-bundle/compare/2.3.0...2.4.0)
 
 ---
 
