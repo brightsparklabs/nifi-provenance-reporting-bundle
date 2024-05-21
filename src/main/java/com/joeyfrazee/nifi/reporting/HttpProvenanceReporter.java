@@ -34,6 +34,8 @@ import org.apache.nifi.annotation.lifecycle.OnScheduled;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.annotation.documentation.Tags;
 import org.apache.nifi.processor.util.StandardValidators;
+import org.apache.nifi.provenance.ProvenanceEventRecord;
+import org.apache.nifi.provenance.ProvenanceEventRepository;
 import org.apache.nifi.reporting.ReportingContext;
 
 @Tags({"http", "provenance"})
@@ -75,6 +77,17 @@ public class HttpProvenanceReporter extends AbstractProvenanceReporter {
             .build();
         final Response response = getHttpClient().newCall(request).execute();
         getLogger().info("{} {} {}", new Object[]{response.code(), response.message(), response.body().string()});
+    }
+
+    @Override
+    public List<ProvenanceEventRecord> getEventList(
+            final ProvenanceEventRepository provenance,
+            final long lastEventId,
+            final int pageSize,
+            final ReportingContext context)
+            throws IOException {
+        final List<ProvenanceEventRecord> events = provenance.getEvents(lastEventId, pageSize);
+        return events;
     }
 
     public void indexEvent(final Map<String, Object> event, final ReportingContext context) throws IOException {

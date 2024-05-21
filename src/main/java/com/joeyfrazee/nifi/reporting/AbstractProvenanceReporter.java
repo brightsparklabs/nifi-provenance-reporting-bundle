@@ -105,6 +105,23 @@ public abstract class AbstractProvenanceReporter extends AbstractReportingTask {
      */
     public abstract void indexEvent(final Map<String, Object> event, final ReportingContext context) throws IOException;
 
+    /**
+     * Creates a list of events.
+     *
+     * @param provenance The repository housing Provenance events.
+     * @param lastEventId The id of the first record to retrieve.
+     * @param pageSize The maximum number of records to retrieve.
+     * @param context The reporting context.
+     * @return A List of ProvenanceEventRecords.
+     * @throws IOException If error reading from repository
+     */
+    public abstract List<ProvenanceEventRecord> getEventList(
+            final ProvenanceEventRepository provenance,
+            final long lastEventId,
+            final int pageSize,
+            final ReportingContext context)
+            throws IOException;
+
     @Override
     public void onTrigger(final ReportingContext context) {
         final StateManager stateManager = context.getStateManager();
@@ -125,7 +142,7 @@ public abstract class AbstractProvenanceReporter extends AbstractReportingTask {
                     lastEventId = maxEventId - maxHistory + 1;
                 }
 
-                final List<ProvenanceEventRecord> events = provenance.getEvents(lastEventId, pageSize);
+                final List<ProvenanceEventRecord> events = getEventList(provenance, lastEventId, pageSize, context);
 
                 for (ProvenanceEventRecord e : events) {
                     final Map<String, Object> event = createEventMap(e);
