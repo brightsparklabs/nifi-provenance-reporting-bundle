@@ -21,7 +21,7 @@ plugins {
     // Apply the Signing plugin, since Maven Central requires artifacts to be signed.
     id 'signing'
     // Maven Central publishing needs to be fed through Nexus.
-    id 'io.github.gradle-nexus.publish-plugin' version '1.3.0'
+    id 'io.github.gradle-nexus.publish-plugin' version '2.0.0'
 }
 
 // -----------------------------------------------------------------------------
@@ -43,7 +43,7 @@ ext {
 
 dependencies {
     api "org.apache.nifi:nifi-utils:${NIFI_VERSION}"
-    api 'co.elastic.clients:elasticsearch-java:8.12.2'
+    api 'co.elastic.clients:elasticsearch-java:8.13.0'
     api 'com.fasterxml.jackson.core:jackson-databind:2.17.0'
     api 'com.squareup.okhttp:okhttp:2.7.5'
     compileOnly "org.apache.nifi:nifi-api:${NIFI_VERSION}"
