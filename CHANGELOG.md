@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 The changelog is applicable from version `1.0.0` onwards.
 
+## [Unreleased] - YYYY-MM-DD
+
+### Changed
+
+- APED-138: Dependency patching.
+
 ---
 
 ## [2.4.0] - 2024-05-21
