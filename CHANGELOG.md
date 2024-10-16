@@ -6,11 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 The changelog is applicable from version `1.0.0` onwards.
 
-## [Unreleased] - YYYY-MM-DD
+## [2.5.0] - 2024-10-16
 
 ### Changed
 
 - APED-138: Dependency patching.
+
+[Commits](https://github.com/brightsparklabs/nifi-provenance-reporting-bundle/compare/2.4.0...2.5.0)
 
 ---
 
