@@ -185,5 +185,5 @@ task prePublishToMavenCentral {
 task publishToMavenCentral {
     group 'brightSPARK Labs - Maven Central Publishing'
     description 'Publishes the release to Maven Central.'
-    dependsOn 'publishToSonatype', 'closeAndReleaseSonatypeStagingRepository'
+    dependsOn 'publishToSonatype', 'closeAndReleaseStagingRepositories'
 }
