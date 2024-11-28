@@ -9,7 +9,7 @@
 
 plugins {
     // Apply the brightSPARK Labs plugin for standardisation.
-    id 'com.brightsparklabs.gradle.baseline' version '4.7.0'
+    id 'com.brightsparklabs.gradle.baseline' version '4.8.0'
     // Apply the Java Library plugin.
     id 'java-library'
     // Apply the Gradle nar plugin to build the .nar file.
@@ -43,8 +43,8 @@ ext {
 
 dependencies {
     api "org.apache.nifi:nifi-utils:${NIFI_VERSION}"
-    api 'co.elastic.clients:elasticsearch-java:8.15.2'
-    api 'com.fasterxml.jackson.core:jackson-databind:2.18.0'
+    api 'co.elastic.clients:elasticsearch-java:8.16.1'
+    api 'com.fasterxml.jackson.core:jackson-databind:2.18.2'
     api 'com.squareup.okhttp:okhttp:2.7.5'
     compileOnly "org.apache.nifi:nifi-api:${NIFI_VERSION}"
     implementation 'com.google.guava:guava:33.3.1-jre'
