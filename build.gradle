@@ -47,7 +47,7 @@ dependencies {
     api 'com.fasterxml.jackson.core:jackson-databind:2.18.3'
     api 'com.squareup.okhttp:okhttp:2.7.5'
     compileOnly "org.apache.nifi:nifi-api:${NIFI_VERSION}"
-    implementation 'com.google.guava:guava:33.4.6-jre'
+    implementation 'com.google.guava:guava:33.4.8-jre'
 }
 
 // -----------------------------------------------------------------------------
