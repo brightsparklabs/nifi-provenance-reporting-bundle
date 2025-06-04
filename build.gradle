@@ -21,7 +21,7 @@ plugins {
     // Maven Central publishing needs to be fed through Nexus.
     id 'io.github.gradle-nexus.publish-plugin' version '2.0.0'
     // Dependency version check plugins.
-    id 'com.github.ben-manes.versions' version '0.51.0'
+    id 'com.github.ben-manes.versions' version '0.52.0'
     id 'se.patrikerdes.use-latest-versions' version '0.2.18'
 }
 
@@ -48,12 +48,12 @@ ext {
 
 dependencies {
     api "org.apache.nifi:nifi-processor-utils:${NIFI_VERSION}"
-    api 'co.elastic.clients:elasticsearch-java:8.16.1'
-    api 'com.fasterxml.jackson.core:jackson-databind:2.18.2'
+    api 'co.elastic.clients:elasticsearch-java:8.18.1'
+    api 'com.fasterxml.jackson.core:jackson-databind:2.19.0'
     api 'com.squareup.okhttp:okhttp:2.7.5'
     compileOnly "org.apache.nifi:nifi-api:${NIFI_VERSION}"
-    implementation 'com.google.guava:guava:33.3.1-jre'
-    implementation 'com.github.ben-manes:gradle-versions-plugin:0.51.0'
+    implementation 'com.google.guava:guava:33.4.8-jre'
+    implementation 'com.github.ben-manes:gradle-versions-plugin:0.52.0'
     implementation 'se.patrikerdes:gradle-use-latest-versions-plugin:0.2.18'
 }
 
