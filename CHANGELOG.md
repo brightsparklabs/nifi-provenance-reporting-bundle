@@ -6,10 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 The changelog is applicable from version `1.0.0` onwards.
 
-## [Unreleased] - 2025-01-23
+## [Unreleased] - 2025-06-04
 
 ### Changed
 
+- APED-140: Dependency patching.
 - RAD-181: Update GitHub workflows to use standardised Java workflow.
 
 [Commits](https://github.com/brightsparklabs/nifi-provenance-reporting-bundle/compare/2.6.0...)
