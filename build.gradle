@@ -347,11 +347,6 @@ jreleaser {
 // TASKS
 // -----------------------------------------------------------------------------
 
-// Ensure the build directory is clean before building the `.nar` file.
-tasks.withType(Nar).configureEach { task ->
-    task.dependsOn clean
-}
-
 // Ensure the `.nar` file is built before publishing artifacts to the staging directory.
 tasks.withType(PublishToMavenRepository).configureEach { task ->
     task.dependsOn nar
