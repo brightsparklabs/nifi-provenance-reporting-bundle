@@ -200,18 +200,20 @@ jreleaser {
         // The passphrase required to read secret keys.
         // Set via env var `JRELEASER_GPG_PASSPHRASE`.
         //
-        // NOTE: We set this to a GitHub secret environment variable.
+        // NOTE: We set this using a project property. See
+        // https://docs.gradle.org/current/userguide/build_environment.html#sec:project_properties
         // NOTE: This raises an error if left blank, however this is a bug that should be fixed in
         // the 1.19.0 release. See https://github.com/jreleaser/jreleaser/issues/1883.
-        passphrase = System.getenv("PGP_SIGNING_PASSWORD") ?: '__DUMMY_VALUE__'
+        passphrase = findProperty("signingPassword") ?: '__DUMMY_VALUE__'
 
         // The private GPG (ascii armored) used to sign files and commits.
         // Required when mode = `MEMORY` || `FILE`.
         // Set via env var `JRELEASER_GPG_SECRET_KEY`.
         //
-        // NOTE: We set this to a GitHub secret environment variable.
+        // NOTE: We set this using a project property. See
+        // https://docs.gradle.org/current/userguide/build_environment.html#sec:project_properties
         // NOTE: If set to a non-empty malformed value, signing will fail with "Unexpected error".
-        secretKey = System.getenv("PGP_SIGNING_KEY")
+        secretKey = findProperty("signingKey")
     }
 
     // Artifact deployment configuration.
@@ -234,14 +236,16 @@ jreleaser {
                     // The username required for authorization.
                     // Set via env var `JRELEASER_MAVENCENTRAL_USERNAME`.
                     //
-                    // NOTE: We set this to a GitHub secret environment variable.
-                    username = System.getenv("MAVEN_CENTRAL_USERNAME")
+                    // NOTE: We set this using a project property. See
+                    // https://docs.gradle.org/current/userguide/build_environment.html#sec:project_properties
+                    username = findProperty("sonatypeUsername")
 
                     // Password for login into the MAVENCENTRAL service.
                     // Set via env var `JRELEASER_MAVENCENTRAL_PASSWORD`.
                     //
-                    // NOTE: We set this to a GitHub secret environment variable.
-                    password = System.getenv("MAVEN_CENTRAL_PASSWORD")
+                    // NOTE: We set this using a project property. See
+                    // https://docs.gradle.org/current/userguide/build_environment.html#sec:project_properties
+                    password = findProperty("sonatypePassword")
 
                     // The authorization method to use.
                     // Supported values are [`NONE`, `BASIC`, `BEARER`].
