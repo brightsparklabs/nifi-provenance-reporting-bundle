@@ -15,6 +15,7 @@ The changelog is applicable from version `1.0.0` onwards.
 ### Changed
 
 - RAD-233: Migrated Maven Central publishing from OSSRH to Central Portal using JReleaser.
+- RAD-248: Update plugins and dependencies. Explicitly add elasticsearch-rest-client and Apache HTTP libraries.
 
 [Commits](https://github.com/brightsparklabs/nifi-provenance-reporting-bundle/compare/2.7.0...)
 
