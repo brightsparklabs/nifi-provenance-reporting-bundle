@@ -6,18 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 The changelog is applicable from version `1.0.0` onwards.
 
-## [Unreleased] - YYYY-MM-DD
-
-### Added
-
-### Fixed
+## [2.8.0] - 2026-03-04
 
 ### Changed
 
 - RAD-233: Migrated Maven Central publishing from OSSRH to Central Portal using JReleaser.
 - RAD-248: Update plugins and dependencies. Explicitly add elasticsearch-rest-client and Apache HTTP libraries.
 
-[Commits](https://github.com/brightsparklabs/nifi-provenance-reporting-bundle/compare/2.7.0...)
+[Commits](https://github.com/brightsparklabs/nifi-provenance-reporting-bundle/compare/2.7.0...2.8.0)
 
 ## [2.7.0] - 2025-06-06
 
