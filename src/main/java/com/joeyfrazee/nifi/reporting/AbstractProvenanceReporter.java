@@ -216,7 +216,6 @@ public abstract class AbstractProvenanceReporter extends AbstractReportingTask {
         final DateTimeFormatter formatter =
                 DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
-        //source.put("@timestamp", formatter.format(LocalDateTime.now(ZoneId.systemDefault())));
         source.put("@timestamp", Instant.now().toString());
         source.put("event_id", event.getEventId());
         source.put("event_time", event.getEventTime());
