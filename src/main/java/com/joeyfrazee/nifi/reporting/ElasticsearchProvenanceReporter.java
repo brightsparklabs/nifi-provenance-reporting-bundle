@@ -26,7 +26,8 @@ import co.elastic.clients.elasticsearch.core.IndexRequest;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.TransportUtils;
-import co.elastic.clients.transport.rest_client.RestClientTransport;
+import co.elastic.clients.transport.rest5_client.Rest5ClientTransport;
+import co.elastic.clients.transport.rest5_client.low_level.Rest5Client;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
@@ -39,10 +40,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import javax.net.ssl.SSLContext;
-import org.apache.http.HttpHost;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.hc.core5.http.HttpHost;
+// import org.apache.http.auth.AuthScope;
+// import org.apache.http.auth.UsernamePasswordCredentials;
+// import org.apache.http.impl.client.BasicCredentialsProvider;
+
+import org.apache.hc.client5.http.auth.AuthScope;
+import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
+import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
+
 import org.apache.nifi.annotation.configuration.DefaultSchedule;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.annotation.documentation.Tags;
@@ -54,7 +60,7 @@ import org.apache.nifi.provenance.ProvenanceEventRecord;
 import org.apache.nifi.provenance.ProvenanceEventRepository;
 import org.apache.nifi.reporting.ReportingContext;
 import org.apache.nifi.scheduling.SchedulingStrategy;
-import org.elasticsearch.client.RestClient;
+//import org.elasticsearch.client.Rest5Client;
 
 @Tags({"elasticsearch", "provenance"})
 // Ideally we would use an environment variable to set the default run schedule. Unfortunately this
@@ -381,7 +387,7 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
         // Create the Elasticsearch API client.
         final String protocol = elasticsearchUrl.getProtocol();
         // Wrap RestClient in a try-with-resources block to auto-close it.
-        try (final RestClient restClient =
+        try (final Rest5Client restClient =
                 protocol.equals("https")
                         ? getSecureRestClient(
                                 elasticsearchUrl,
@@ -515,7 +521,7 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
      * @param elasticsearchPassword The Elasticsearch password.
      * @return The RestClient object.
      */
-    private RestClient getSecureRestClient(
+    private Rest5Client getSecureRestClient(
             final URL elasticsearchUrl,
             final String elasticsearchCACertFingerprint,
             final String elasticsearchUsername,
@@ -524,15 +530,14 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
                 TransportUtils.sslContextFromCaFingerprint(elasticsearchCACertFingerprint);
         final BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(
-                AuthScope.ANY,
-                new UsernamePasswordCredentials(elasticsearchUsername, elasticsearchPassword));
-        return RestClient.builder(
+                new AuthScope(null, -1),
+                new UsernamePasswordCredentials(elasticsearchUsername, elasticsearchPassword.toCharArray()));
+        return Rest5Client.builder(
                         new HttpHost(
-                                elasticsearchUrl.getHost(), elasticsearchUrl.getPort(), "https"))
-                .setHttpClientConfigCallback(
-                        hc ->
-                                hc.setSSLContext(sslContext)
-                                        .setDefaultCredentialsProvider(credentialsProvider))
+                                "https", elasticsearchUrl.getHost(), elasticsearchUrl.getPort()))
+                .setSSLContext(sslContext)
+                .setHttpClientConfigCallback(hc ->
+                        hc.setDefaultCredentialsProvider(credentialsProvider))
                 .build();
     }
 
@@ -542,10 +547,10 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
      * @param elasticsearchUrl The Elasticsearch URL.
      * @return The RestClient object.
      */
-    private RestClient getRestClient(final URL elasticsearchUrl) {
+    private Rest5Client getRestClient(final URL elasticsearchUrl) {
         final HttpHost httpHost =
                 new HttpHost(elasticsearchUrl.getHost(), elasticsearchUrl.getPort());
-        return RestClient.builder(httpHost).build();
+        return Rest5Client.builder(httpHost).build();
     }
 
     /**
@@ -554,9 +559,9 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
      * @param restClient The Elasticsearch REST client.
      * @return The ElasticsearchClient object.
      */
-    private ElasticsearchClient getElasticsearchClient(final RestClient restClient) {
+    private ElasticsearchClient getElasticsearchClient(final Rest5Client restClient) {
         final ElasticsearchTransport transport =
-                new RestClientTransport(restClient, new JacksonJsonpMapper());
+                new Rest5ClientTransport(restClient, new JacksonJsonpMapper());
         return new ElasticsearchClient(transport);
     }
 

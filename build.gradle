@@ -9,7 +9,7 @@
 
 plugins {
     // Apply the brightSPARK Labs plugin for standardisation.
-    id 'com.brightsparklabs.gradle.baseline' version '5.1.0'
+    id 'com.brightsparklabs.gradle.baseline' version '6.0.0'
     // Apply the Java Library plugin.
     id 'java-library'
     // Apply the Gradle nar plugin to build the .nar file.
@@ -22,7 +22,7 @@ plugins {
     /* Apply the JReleaser plugin to sign and deploy artifacts.
      * See https://jreleaser.org/guide/latest/tools/jreleaser-gradle.html
      */
-    id 'org.jreleaser' version '1.22.0'
+    id 'org.jreleaser' version '1.23.0'
 }
 
 // -----------------------------------------------------------------------------
@@ -46,27 +46,26 @@ repositories {
 // -----------------------------------------------------------------------------
 
 ext {
-    NIFI_VERSION = "1.28.1"
+    NIFI_VERSION = "2.7.0"
 }
 
 dependencies {
     api "org.apache.nifi:nifi-utils:${NIFI_VERSION}"
-    api 'co.elastic.clients:elasticsearch-java:9.3.1'
-    api 'com.fasterxml.jackson.core:jackson-databind:2.21.1'
+    api 'co.elastic.clients:elasticsearch-java:9.3.2'
+    api 'com.fasterxml.jackson.core:jackson-databind:2.21.2'
     api 'com.squareup.okhttp:okhttp:2.7.5'
     compileOnly "org.apache.nifi:nifi-api:${NIFI_VERSION}"
     implementation 'com.google.guava:guava:33.5.0-jre'
-    implementation "org.elasticsearch.client:elasticsearch-rest-client:9.3.0"
-    implementation "org.apache.httpcomponents:httpclient:4.5.14"
-    implementation "org.apache.httpcomponents:httpcore:4.4.16"
 }
 
 // -----------------------------------------------------------------------------
 // JAVA VERSION
 // -----------------------------------------------------------------------------
 
-sourceCompatibility = 17
-targetCompatibility = 17
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
 
 // -----------------------------------------------------------------------------
 // PROJECT IDENTIFICATION
