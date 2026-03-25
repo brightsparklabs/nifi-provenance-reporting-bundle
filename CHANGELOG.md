@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 The changelog is applicable from version `1.0.0` onwards.
 
+## [Unreleased] - YYYY-MM-DD
+
+### Added
+
+### Fixed
+
+- RAD-251: Fix provenance reporting timestamps showing up with incorrect times in Elasticsearch.
+
+### Changed
+
+[Commits](https://github.com/brightsparklabs/nifi-provenance-reporting-bundle/compare/2.8.0...)
+
 ## [2.8.0] - 2026-03-04
 
 ### Changed
