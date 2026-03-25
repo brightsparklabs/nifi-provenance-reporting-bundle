@@ -12,7 +12,7 @@ The changelog is applicable from version `1.0.0` onwards.
 
 ### Fixed
 
-- RAD-251: Fix Provenance reporting timestamps showing up with incorrect times in elasticsearch.
+- RAD-251: Fix provenance reporting timestamps showing up with incorrect times in Elasticsearch.
 
 ### Changed
 
