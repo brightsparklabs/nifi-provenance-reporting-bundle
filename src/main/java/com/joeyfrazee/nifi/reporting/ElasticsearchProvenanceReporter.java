@@ -40,10 +40,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import javax.net.ssl.SSLContext;
-import org.apache.hc.core5.http.HttpHost;
 import org.apache.hc.client5.http.auth.AuthScope;
 import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
 import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
+import org.apache.hc.core5.http.HttpHost;
 import org.apache.nifi.annotation.configuration.DefaultSchedule;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.annotation.documentation.Tags;
@@ -525,13 +525,14 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
         final BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(
                 new AuthScope(null, -1),
-                new UsernamePasswordCredentials(elasticsearchUsername, elasticsearchPassword.toCharArray()));
+                new UsernamePasswordCredentials(
+                        elasticsearchUsername, elasticsearchPassword.toCharArray()));
         return Rest5Client.builder(
                         new HttpHost(
                                 "https", elasticsearchUrl.getHost(), elasticsearchUrl.getPort()))
                 .setSSLContext(sslContext)
-                .setHttpClientConfigCallback(hc ->
-                        hc.setDefaultCredentialsProvider(credentialsProvider))
+                .setHttpClientConfigCallback(
+                        hc -> hc.setDefaultCredentialsProvider(credentialsProvider))
                 .build();
     }
 
