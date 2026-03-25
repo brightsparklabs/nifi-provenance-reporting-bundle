@@ -41,14 +41,9 @@ import java.util.List;
 import java.util.Map;
 import javax.net.ssl.SSLContext;
 import org.apache.hc.core5.http.HttpHost;
-// import org.apache.http.auth.AuthScope;
-// import org.apache.http.auth.UsernamePasswordCredentials;
-// import org.apache.http.impl.client.BasicCredentialsProvider;
-
 import org.apache.hc.client5.http.auth.AuthScope;
 import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
 import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
-
 import org.apache.nifi.annotation.configuration.DefaultSchedule;
 import org.apache.nifi.annotation.documentation.CapabilityDescription;
 import org.apache.nifi.annotation.documentation.Tags;
@@ -60,7 +55,6 @@ import org.apache.nifi.provenance.ProvenanceEventRecord;
 import org.apache.nifi.provenance.ProvenanceEventRepository;
 import org.apache.nifi.reporting.ReportingContext;
 import org.apache.nifi.scheduling.SchedulingStrategy;
-//import org.elasticsearch.client.Rest5Client;
 
 @Tags({"elasticsearch", "provenance"})
 // Ideally we would use an environment variable to set the default run schedule. Unfortunately this
