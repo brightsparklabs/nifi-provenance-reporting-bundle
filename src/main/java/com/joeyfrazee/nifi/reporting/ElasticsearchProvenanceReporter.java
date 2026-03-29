@@ -524,7 +524,7 @@ public class ElasticsearchProvenanceReporter extends AbstractProvenanceReporter 
                 TransportUtils.sslContextFromCaFingerprint(elasticsearchCACertFingerprint);
         final BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(
-                new AuthScope(null, -1),
+                new AuthScope(elasticsearchUrl.getHost(), elasticsearchUrl.getPort()),
                 new UsernamePasswordCredentials(
                         elasticsearchUsername, elasticsearchPassword.toCharArray()));
         return Rest5Client.builder(

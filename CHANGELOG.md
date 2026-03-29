@@ -13,10 +13,12 @@ The changelog is applicable from version `1.0.0` onwards.
 ### Fixed
 
 - RAD-251: Fix provenance reporting timestamps showing up with incorrect times in Elasticsearch.
-- RAD-249: Introduce a 3.x.x branch that uses Nifi 2. Migrate to HttpClient5 and Elasticsearch rest5
-client. Update to Java 21 and to Gradle 9.4.1. Update plugins and Dependancies.
 
 ### Changed
+
+- RAD-249: Bump NiFi version from 1.28.1 to 2.7.0 and migrate to HttpClient 5 and Rest5Client to support NiFi 2.
+- RAD-249: Bump Java version from 17 to 21 and Gradle version from 8.14.1 to 9.4.1.
+- RAD-249: Update plugins and dependencies.
 
 [Commits](https://github.com/brightsparklabs/nifi-provenance-reporting-bundle/compare/2.8.0...)
 
