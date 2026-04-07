@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.time.Instant;
 
 import org.apache.nifi.components.PropertyDescriptor;
 import org.apache.nifi.components.state.Scope;
@@ -194,7 +195,7 @@ public abstract class AbstractProvenanceReporter extends AbstractReportingTask {
         final Map<String, Object> source = new HashMap<>();
         final SimpleDateFormat ft = new SimpleDateFormat ("YYYY-MM-dd'T'HH:mm:ss.SSS'Z'");
 
-        source.put("@timestamp", ft.format(new Date()));
+        source.put("@timestamp", Instant.now().toString());
         source.put("event_id", event.getEventId());
         source.put("event_time", new Date(event.getEventTime()));
         source.put("entry_date", new Date(event.getFlowFileEntryDate()));
