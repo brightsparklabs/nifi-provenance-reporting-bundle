@@ -22,9 +22,7 @@
 package com.joeyfrazee.nifi.reporting;
 
 import java.io.*;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
+import java.time.Instant;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -212,10 +210,8 @@ public abstract class AbstractProvenanceReporter extends AbstractReportingTask {
      */
     private Map<String, Object> createEventMap(ProvenanceEventRecord event) {
         final Map<String, Object> source = new HashMap<>();
-        final DateTimeFormatter formatter =
-                DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
-        source.put("@timestamp", formatter.format(LocalDateTime.now(ZoneId.systemDefault())));
+        source.put("@timestamp", Instant.now().toString());
         source.put("event_id", event.getEventId());
         source.put("event_time", event.getEventTime());
         source.put("entry_date", event.getFlowFileEntryDate());
