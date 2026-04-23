@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 The changelog is applicable from version `1.0.0` onwards.
 
-## [Unreleased] - YYYY-MM-DD
+## [2.9.0] - 2026-04-07
 
 ### Added
 
@@ -20,7 +20,7 @@ The changelog is applicable from version `1.0.0` onwards.
 - RAD-249: Bump Java version from 17 to 21 and Gradle version from 8.14.1 to 9.4.1.
 - RAD-249: Update plugins and dependencies.
 
-[Commits](https://github.com/brightsparklabs/nifi-provenance-reporting-bundle/compare/2.8.0...)
+[Commits](https://github.com/brightsparklabs/nifi-provenance-reporting-bundle/compare/2.8.0...2.9.0)
 
 ## [2.8.0] - 2026-03-04
 
