@@ -6,6 +6,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 The changelog is applicable from version `1.0.0` onwards.
 
+## [Unreleased] - YYYY-MM-DD
+
+### Added
+
+### Fixed
+
+### Changed
+
+[Commits](https://github.com/brightsparklabs/nifi-provenance-reporting-bundle/compare/3.0.0...)
+
+## [3.0.0] - 2026-09-30
+
+### Changed
+
+- APED-213: Dependency patching.
+- APED-213: Bumped Java version from 21 to 25.
+
+[Commits](https://github.com/brightsparklabs/nifi-provenance-reporting-bundle/compare/2.9.0...3.0.0)
+
 ## [2.9.0] - 2026-04-07
 
 ### Added
@@ -15,6 +34,10 @@ The changelog is applicable from version `1.0.0` onwards.
 - RAD-251: Fix provenance reporting timestamps showing up with incorrect times in Elasticsearch.
 
 ### Changed
+
+- RAD-249: Bump NiFi version from 1.28.1 to 2.7.0 and migrate to HttpClient 5 and Rest5Client to support NiFi 2.
+- RAD-249: Bump Java version from 17 to 21 and Gradle version from 8.14.1 to 9.4.1.
+- RAD-249: Update plugins and dependencies.
 
 [Commits](https://github.com/brightsparklabs/nifi-provenance-reporting-bundle/compare/2.8.0...2.9.0)
 

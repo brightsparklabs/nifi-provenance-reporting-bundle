@@ -13,7 +13,7 @@ NiFi provenance reporting tasks.
 |Plugin Version |NiFi Version |Java Version
 
 | 3.x.y | &gt;= 2.0.0   | 21
-| 2.x.y | &gt;= 1.10.0  | 17
+| 2.x.y | &gt;= 1.10.0 &lt;= 1.28.1  | 17
 | 1.x.y | &lt;= 1.9.2   | 17
 |===
 
