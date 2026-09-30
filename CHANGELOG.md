@@ -14,10 +14,16 @@ The changelog is applicable from version `1.0.0` onwards.
 
 ### Changed
 
+[Commits](https://github.com/brightsparklabs/nifi-provenance-reporting-bundle/compare/3.0.0...)
+
+## [3.0.0] - 2026-09-30
+
+### Changed
+
 - APED-213: Dependency patching.
 - APED-213: Bumped Java version from 21 to 25.
 
-[Commits](https://github.com/brightsparklabs/nifi-provenance-reporting-bundle/compare/2.9.0...)
+[Commits](https://github.com/brightsparklabs/nifi-provenance-reporting-bundle/compare/2.9.0...3.0.0)
 
 ## [2.9.0] - 2026-04-07
 
