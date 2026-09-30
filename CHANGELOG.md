@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 The changelog is applicable from version `1.0.0` onwards.
 
+## [Unreleased] - YYYY-MM-DD
+
+### Added
+
+### Fixed
+
+### Changed
+
+- APED-213: Dependency patching.
+- APED-213: Bumped Java version from 21 to 25.
+
+[Commits](https://github.com/brightsparklabs/nifi-provenance-reporting-bundle/compare/2.9.0...)
+
 ## [2.9.0] - 2026-04-07
 
 ### Added
