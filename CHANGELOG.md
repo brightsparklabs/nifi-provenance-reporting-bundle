@@ -12,6 +12,8 @@ The changelog is applicable from version `1.0.0` onwards.
 
 ### Fixed
 
+- APED-215: Resolve publishing errors by downgrading Gradle Baseline plugin to 6.0.0 and Java to 21.
+
 ### Changed
 
 [Commits](https://github.com/brightsparklabs/nifi-provenance-reporting-bundle/compare/3.0.0...)
